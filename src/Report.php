@@ -62,7 +62,7 @@ class Report
     /**
      * Run Report
      */
-    public function runReport()
+    public function executeReport()
     {
         if ($this->report_id === Report::DIAGNOSTIC) {
             $this->generateDiagnosticReport();
