@@ -186,4 +186,5 @@ class Report
             echo $line;
         }
     }
+    
 }
