@@ -1,5 +1,6 @@
 <?php
 
+require_once 'ReadData.php';
 class Report
 {
     // Update the Project Directory '/Users/Username/Path_To_Project_Root'
@@ -15,13 +16,23 @@ class Report
         self::FEEDBACK
     ];
 
+    private ReadData $readData;
     private string $studentId;
     private int $reportId;
+    private array $students;
+    private array $assessments;
+    private array $questions;
+    private array $student_responses;
 
     public function __construct($studentId, $reportId)
     {
+        $this->readData = new ReadData();
         $this->studentId = $studentId;
         $this->reportId = $reportId;
+        $this->students = $this->readData->getStudents();
+        $this->assessments = $this->readData->getAssessments();
+        $this->questions = $this->readData->getQuestions();
+        $this->student_responses = $this->readData->getStudentResponses();
     }
 
     /**
@@ -45,7 +56,7 @@ class Report
      */
     public function generateDiagnosticReport()
     {
-        echo "Diagnostic Report in-progress.";
+        
     }
     /**
      * Generate Progress Report

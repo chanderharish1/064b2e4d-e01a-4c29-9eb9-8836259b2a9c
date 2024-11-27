@@ -31,7 +31,7 @@ Before starting the installation you must have the following prerequisites.
 2. **Composer:** Composer is a tool for dependency management in PHP. It allows you to declare the libraries your project depends on and it will manage (install/update) them for you.
 2. **Docker Desktop:** Docker is used for containerising the PHP Application and build neccssary images for the application.
 3. **GitHub or CLI Git**: Clone the github repository from the provided URL or download and unzip the project files. Clone or place the project in a desired location of your local_dev_path.  
-4. Open RunApp.php file and update the project directory path accordingly.
+4. Open `src/Report.php` file and update `PROJECT_DIRECTORY` path accordingly.
     
 ### Installing
 
