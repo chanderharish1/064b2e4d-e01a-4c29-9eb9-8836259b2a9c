@@ -27,4 +27,4 @@ while (!$validReportId) {
 
 // Run report
 $report = new Report($studentId, $reportId);
-$report->runReport();
+$report->executeReport();
