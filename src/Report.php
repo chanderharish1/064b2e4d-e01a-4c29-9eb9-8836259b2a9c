@@ -172,7 +172,49 @@ class Report
      */
     public function generateProgressReport()
     {
-        
+        $output = array();
+        $total_assessment_count = 0;
+        foreach ($this->student_responses as $student_response) {
+            if (
+                !empty($student_response['completed']) &&
+                $student_response['student']['id'] == $this->student_id
+            ){
+                $total_assessment_count++;
+                $this->assessment_id = $student_response['assessmentId'];
+                foreach($this->assessments as $assessment) {
+                    if (!empty($this->assessment_id) && $assessment['id'] == $this->assessment_id) {
+                        $this->assessment_name = $assessment['name'];
+                    }
+                }
+            }
+        }
+
+        $line1 = "\n" . $this->getStudentFullName() . " has completed " . $this->assessment_name . " assessment " . $total_assessment_count . " times in total. Date and raw score given below:\n";
+        array_push($output, $line1);
+
+        $out = [];
+        $student_responses_result = [];
+        foreach ($this->student_responses as $student_response) {
+            if (!empty($student_response['completed']) && $student_response['student']['id'] == $this->student_id){
+                $student_responses_result['dateCompleted'] = date('jS F Y', strtotime(str_replace('/', '-', $student_response['completed'])));
+                $student_responses_result['rawScore'] = $student_response['results']['rawScore'];
+                $student_responses_result['totalResponses'] = count($student_response['responses']);
+                array_push($out, $student_responses_result);
+            }
+        }
+
+        foreach($out as $line_item) {
+            array_push($output, "\nDate: " . $line_item['dateCompleted'] . ", Raw Score: " . $line_item['rawScore'] . " out of " . $line_item['totalResponses']);
+        }
+
+        $raw_scores = array_column($out, 'rawScore');
+        $difference = max($raw_scores) - min($raw_scores);
+
+        array_push($output, "\n\n" . $this->getStudentFullName() . " got " . $difference . " more correct in the recent completed asessemnt than the oldest\n");
+
+        // Display output
+        $this->displayOnConsole($output);
+
     }
     /**
      * Generate Feedback Report
