@@ -30,6 +30,10 @@ class Report
     private array $questions;
     private array $student_responses;
 
+    private string $student_first_name;
+    private string $student_last_name;
+    private string $assessment_id;
+    private string $assessment_name;
     private string $recent_date;
     private array $latest_student_response;
 
@@ -47,6 +51,12 @@ class Report
 
         $this->recent_date = '';
         $this->latest_student_response = [];
+        $this->student_first_name = '';
+        $this->student_last_name = '';
+        $this->assessment_id = '';
+        $this->assessment_name = '';
+
+        $this->setStudentFullName();
     }
 
     /**
@@ -72,18 +82,7 @@ class Report
     {
         $output = array();
 
-        // 1: Determining recent assessment 
-        // 1.1 Find student's first and last name
-        $student_first_name = '';
-        $student_last_name = '';
-        foreach ($this->students as $student) {
-            if ($student['id'] == $this->student_id) {
-                $student_first_name = $student['firstName'];
-                $student_last_name = $student['lastName'];
-            }
-        }
-
-        // 1.2 Determine recent date from the student responses
+        // 1.1 Determining recent date for assessment with student responses
         foreach ($this->student_responses as $student_response) {
             if (!empty($student_response['completed']) && $student_response['student']['id'] == $this->student_id){
                 if($student_response['completed'] > $this->recent_date) {
@@ -92,24 +91,27 @@ class Report
             }
         }
 
-        // 1.3 Find assessment id for latest student response
-        $assessment_id = '';
+        // 1.2 Find assessment id for latest student response
         foreach ($this->student_responses as $student_response) {
-            if (!empty($student_response['completed']) && $student_response['completed'] == $this->recent_date && $student_response['student']['id'] == $this->student_id){
-                $assessment_id = $student_response['assessmentId'];
+            if (
+                !empty($this->recent_date) &&
+                !empty($student_response['completed']) && 
+                $student_response['completed'] == $this->recent_date && 
+                $student_response['student']['id'] == $this->student_id
+            ){
+                $this->assessment_id = $student_response['assessmentId'];
                 $this->latest_student_response = $student_response;
             }
         }
 
-        // 1.4 Find assessment name by assessment id
-        $assessment_name = '';
+        // 1.3 Find assessment name by assessment id for lates student response
         foreach($this->assessments as $assessment) {
-            if (!empty($assessment_id) && $assessment['id'] == $assessment_id) {
-                $assessment_name = $assessment['name'];
+            if (!empty($this->assessment_id) && $assessment['id'] == $this->assessment_id) {
+                $this->assessment_name = $assessment['name'];
             }
         }
 
-        $line1 = "\n" . $student_first_name . " " . $student_last_name . " recently completed " . $assessment_name . " assessment on " . date('jS F Y h:i A', strtotime(str_replace('/', '-', $this->recent_date))) . "\n";
+        $line1 = "\n" . $this->getStudentFullName() . " recently completed " . $this->assessment_name . " assessment on " . date('jS F Y h:i A', strtotime(str_replace('/', '-', $this->recent_date))) . "\n";
         array_push($output, $line1);
 
         // 2 Find overall results
@@ -170,7 +172,7 @@ class Report
      */
     public function generateProgressReport()
     {
-        echo "Progress Report in-progress.";
+        
     }
     /**
      * Generate Feedback Report
@@ -185,5 +187,20 @@ class Report
         foreach($output as $line) {
             echo $line;
         }
+    }
+
+    public function setStudentFullName(): void
+    {
+        foreach ($this->students as $student) {
+            if ($student['id'] == $this->student_id) {
+                $this->student_first_name = $student['firstName'];
+                $this->student_last_name = $student['lastName'];
+            }
+        }
+    }
+
+    public function getStudentFullName(): string
+    {
+        return $this->student_first_name . " " . $this->student_last_name;
     }
 }
