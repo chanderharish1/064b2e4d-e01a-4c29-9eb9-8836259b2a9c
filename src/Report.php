@@ -1,5 +1,6 @@
 <?php
 
+require_once 'ReadData.php';
 class Report
 {
     // Update the Project Directory '/Users/Username/Path_To_Project_Root'
@@ -15,12 +16,174 @@ class Report
         self::FEEDBACK
     ];
 
-    private string $studentId;
-    private int $reportId;
+    public const NUMBER_AND_ALGEBRA = "Number and Algebra";
+    public const MEASUREMENT_AND_GEOMETRY = "Measurement and Geometry";
+    public const STATISTICS_AND_PROBABILITY = "Statistics and Probability";
 
-    public function __construct($studentId, $reportId)
+    private ReadData $readData;
+
+    private string $student_id;
+    private int $report_id;
+
+    private array $students;
+    private array $assessments;
+    private array $questions;
+    private array $student_responses;
+
+    private string $recent_date;
+    private array $latest_student_response;
+
+    public function __construct($student_id, $report_id)
     {
-        $this->studentId = $studentId;
-        $this->reportId = $reportId;
+        $this->readData = new ReadData();
+
+        $this->student_id = $student_id;
+        $this->report_id = $report_id;
+
+        $this->students = $this->readData->getStudents();
+        $this->assessments = $this->readData->getAssessments();
+        $this->questions = $this->readData->getQuestions();
+        $this->student_responses = $this->readData->getStudentResponses();
+
+        $this->recent_date = '';
+        $this->latest_student_response = [];
+    }
+
+    /**
+     * Run Report
+     */
+    public function runReport()
+    {
+        if ($this->report_id === Report::DIAGNOSTIC) {
+            $this->generateDiagnosticReport();
+        }
+        if ($this->report_id === Report::PROGRESS) {
+            $this->generateProgressReport();
+        }
+        if ($this->report_id === Report::FEEDBACK) {
+            $this->generateFeedbackReport();
+        }
+    }
+
+    /**
+     * Generate Diagnostic Report
+     */
+    public function generateDiagnosticReport()
+    {
+        $output = array();
+
+        // 1: Determining recent assessment 
+        // 1.1 Find student's first and last name
+        $student_first_name = '';
+        $student_last_name = '';
+        foreach ($this->students as $student) {
+            if ($student['id'] == $this->student_id) {
+                $student_first_name = $student['firstName'];
+                $student_last_name = $student['lastName'];
+            }
+        }
+
+        // 1.2 Determine recent date from the student responses
+        foreach ($this->student_responses as $student_response) {
+            if (!empty($student_response['completed']) && $student_response['student']['id'] == $this->student_id){
+                if($student_response['completed'] > $this->recent_date) {
+                    $this->recent_date = $student_response['completed'];
+                }
+            }
+        }
+
+        // 1.3 Find assessment id for latest student response
+        $assessment_id = '';
+        foreach ($this->student_responses as $student_response) {
+            if (!empty($student_response['completed']) && $student_response['completed'] == $this->recent_date && $student_response['student']['id'] == $this->student_id){
+                $assessment_id = $student_response['assessmentId'];
+                $this->latest_student_response = $student_response;
+            }
+        }
+
+        // 1.4 Find assessment name by assessment id
+        $assessment_name = '';
+        foreach($this->assessments as $assessment) {
+            if (!empty($assessment_id) && $assessment['id'] == $assessment_id) {
+                $assessment_name = $assessment['name'];
+            }
+        }
+
+        $line1 = "\n" . $student_first_name . " " . $student_last_name . " recently completed " . $assessment_name . " assessment on " . date('jS F Y h:i A', strtotime(str_replace('/', '-', $this->recent_date))) . "\n";
+        array_push($output, $line1);
+
+        // 2 Find overall results
+        $line2 = "He got " . $this->latest_student_response['results']['rawScore'] . " question right out of " . count($this->latest_student_response['responses']) . ". Details by strand given below:\n\n";
+        array_push($output, $line2);
+
+        // 3. Find out Details by strand
+        $number_and_algebra_correct_count = 0;
+        $number_and_algebra_total_count = 0;
+        $measurement_and_geometry_correct_count = 0;
+        $measurement_and_geometry_total_count = 0;
+        $statistics_and_probability_correct_count = 0;
+        $statistics_and_probability_total_count = 0;
+        foreach($this->latest_student_response['responses'] as $answer) {
+            foreach($this->questions as $question) {
+                if ($answer['questionId'] == $question['id']){
+                    if ($question['strand'] == self::NUMBER_AND_ALGEBRA) {
+                        if ($answer['response'] == $question['config']['key']){
+                            $number_and_algebra_correct_count++;
+                            $number_and_algebra_total_count++;
+                        } else {
+                            $number_and_algebra_total_count++;
+                        }
+                    }
+                    if ($question['strand'] == self::MEASUREMENT_AND_GEOMETRY) {
+                        if ($answer['response'] == $question['config']['key']){
+                            $measurement_and_geometry_correct_count++;
+                            $measurement_and_geometry_total_count++;
+                        } else {
+                            $measurement_and_geometry_total_count++;
+                        }
+                    }
+                    if ($question['strand'] == self::STATISTICS_AND_PROBABILITY) {
+                        if ($answer['response'] == $question['config']['key']){
+                            $statistics_and_probability_correct_count++;
+                            $statistics_and_probability_total_count++;
+                        } else {
+                            $statistics_and_probability_total_count++;
+                        }
+                    }
+                }
+            }
+        }
+
+        $line3 = self::NUMBER_AND_ALGEBRA . ": " . $number_and_algebra_correct_count . " out of " . $number_and_algebra_total_count . " correct\n";
+        array_push($output, $line3);
+        $line4 = self::MEASUREMENT_AND_GEOMETRY . ": " . $measurement_and_geometry_correct_count . " out of " . $measurement_and_geometry_total_count . " correct\n";
+        array_push($output, $line4);
+        $line5 = self::STATISTICS_AND_PROBABILITY . ": " . $statistics_and_probability_correct_count . " out of " . $statistics_and_probability_total_count . " correct\n\n";
+        array_push($output, $line5);
+
+        // 4. Display output
+        $this->displayOnConsole($output);
+
+    }
+    /**
+     * Generate Progress Report
+     */
+    public function generateProgressReport()
+    {
+        echo "Progress Report in-progress.";
+    }
+    /**
+     * Generate Feedback Report
+     */
+    public function generateFeedbackReport()
+    {
+        echo "Feedback Report in-progress.";
+    }
+
+    public function displayOnConsole($output) 
+    {
+        foreach($output as $line) {
+            echo $line;
+        }
     }
 }

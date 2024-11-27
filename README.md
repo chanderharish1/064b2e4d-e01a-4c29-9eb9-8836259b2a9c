@@ -13,6 +13,13 @@ This project is built with PHP programming language, PHP Unit testing framework,
 - PHP framework has not been implemented as part of this project
 - Automated tests, Functional & Integration testing are not covered in this project. PHPUnit testing is covered.
 
+## Assumptions
+
+The program works based on the following assumptions made during development.
+
+- The test data is assumed to have no duplicate records.
+- The year level in students.json and student-responses.json is ambiguous and inconsistent.
+
 ## Getting Started
 
 ### Prerequisites
@@ -24,7 +31,7 @@ Before starting the installation you must have the following prerequisites.
 2. **Composer:** Composer is a tool for dependency management in PHP. It allows you to declare the libraries your project depends on and it will manage (install/update) them for you.
 2. **Docker Desktop:** Docker is used for containerising the PHP Application and build neccssary images for the application.
 3. **GitHub or CLI Git**: Clone the github repository from the provided URL or download and unzip the project files. Clone or place the project in a desired location of your local_dev_path.  
-4. Open RunApp.php file and update the project directory path accordingly.
+4. Open `src/Report.php` file and update `PROJECT_DIRECTORY` path accordingly.
     
 ### Installing
 
@@ -101,7 +108,9 @@ docker compose rm
 ```
 
 ## Running the application
-In your CLI, go to project root directory and run the below command.  
+
+`src/RunApp.php` is the entry point of this application in command line interface.
+In your CLI, go to project root directory and run the below command. 
 ```
 php src/RunApp.php
 ```  
@@ -123,7 +132,7 @@ php src/RunApp.php
 * [PHP](https://www.php.net/) - PHP programming language 
 * [Composer](https://getcomposer.org/) - A dependency management tool
 * [PHPUnit](https://phpunit.de/) - A programmer-oriented Unit testing framework
-* [PHPunit Manual](https://docs.phpunit.de/en/10.5/index.html) - PHPUnit testing framework Manual
+* [PHPUnit Manual](https://docs.phpunit.de/en/10.5/index.html) - PHPUnit testing framework Manual
 
 ## Authors
 
