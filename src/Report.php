@@ -207,9 +207,12 @@ class Report
             array_push($output, "\nDate: " . $line_item['dateCompleted'] . ", Raw Score: " . $line_item['rawScore'] . " out of " . $line_item['totalResponses']);
         }
 
+        /**
+         * The difference in the maximum and minimum rawscore is calculated without considering the evaluation of the date completion.
+         * If the date completion is considered then there is a technical debt which needs to be addressed to get more accurate representation of the message in the last line.
+         */
         $raw_scores = array_column($out, 'rawScore');
         $difference = max($raw_scores) - min($raw_scores);
-
         array_push($output, "\n\n" . $this->getStudentFullName() . " got " . $difference . " more correct in the recent completed asessemnt than the oldest\n");
 
         // Display output
