@@ -23,4 +23,42 @@ class Report
         $this->studentId = $studentId;
         $this->reportId = $reportId;
     }
+
+    /**
+     * Run Report
+     */
+    public function runReport()
+    {
+        if ($this->reportId === Report::DIAGNOSTIC) {
+            $this->generateDiagnosticReport();
+        }
+        if ($this->reportId === Report::PROGRESS) {
+            $this->generateProgressReport();
+        }
+        if ($this->reportId === Report::FEEDBACK) {
+            $this->generateFeedbackReport();
+        }
+    }
+
+    /**
+     * Generate Diagnostic Report
+     */
+    public function generateDiagnosticReport()
+    {
+        echo "Diagnostic Report in-progress.";
+    }
+    /**
+     * Generate Progress Report
+     */
+    public function generateProgressReport()
+    {
+        echo "Progress Report in-progress.";
+    }
+    /**
+     * Generate Feedback Report
+     */
+    public function generateFeedbackReport()
+    {
+        echo "Feedback Report in-progress.";
+    }
 }
