@@ -25,4 +25,6 @@ while (!$validReportId) {
     $validReportId = $validate->validateReportId($reportId);
 }
 
+// Run report
 $report = new Report($studentId, $reportId);
+$report->runReport();
