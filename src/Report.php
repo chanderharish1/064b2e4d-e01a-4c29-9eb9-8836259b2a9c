@@ -224,7 +224,82 @@ class Report
      */
     public function generateFeedbackReport()
     {
-        echo "Feedback Report in-progress.";
+        $output = array();
+
+        // 1.1 Determining recent date for assessment with student responses
+        foreach ($this->student_responses as $student_response) {
+            if (!empty($student_response['completed']) && $student_response['student']['id'] == $this->student_id){
+                if($student_response['completed'] > $this->recent_date) {
+                    $this->recent_date = $student_response['completed'];
+                }
+            }
+        }
+
+        // 1.2 Find assessment id for latest student response
+        foreach ($this->student_responses as $student_response) {
+            if (
+                !empty($this->recent_date) &&
+                !empty($student_response['completed']) && 
+                $student_response['completed'] == $this->recent_date && 
+                $student_response['student']['id'] == $this->student_id
+            ){
+                $this->assessment_id = $student_response['assessmentId'];
+                $this->latest_student_response = $student_response;
+            }
+        }
+
+        // 1.3 Find assessment name by assessment id for lates student response
+        foreach($this->assessments as $assessment) {
+            if (!empty($this->assessment_id) && $assessment['id'] == $this->assessment_id) {
+                $this->assessment_name = $assessment['name'];
+            }
+        }
+
+        $line1 = "\n" . $this->getStudentFullName() . " recently completed " . $this->assessment_name . " assessment on " . date('jS F Y h:i A', strtotime(str_replace('/', '-', $this->recent_date))) . "\n";
+        array_push($output, $line1);
+
+        // 2 Find overall results
+        $line2 = "He got " . $this->latest_student_response['results']['rawScore'] . " question right out of " . count($this->latest_student_response['responses']) . ". Feedback for wrong answers given below\n\n";
+        array_push($output, $line2);
+
+        // 3. Find out Details of wrong answers
+        $out = [];
+        $student_responses_result = [];
+        foreach($this->latest_student_response['responses'] as $answer) {
+            foreach($this->questions as $question) {
+                if ($answer['questionId'] == $question['id']){
+                    if ($answer['response'] != $question['config']['key']){
+                        $student_responses_result['stem'] = "Question: " .$question['stem'] . "\n";
+                        foreach($question['config']['options'] as $options){
+                            if ($options['id'] == $answer['response']) {
+                                $student_responses_result['yourAnswer'] = "Your Answer: " . $options['label'] . " with value " . $options['value'] . "\n";
+                            }
+                        }
+                        foreach($question['config']['options'] as $options){
+                            if ($options['id'] == $question['config']['key']) {
+                                $student_responses_result['rightAnswer'] = "Right Answer: " . $options['label'] . " with value " . $options['value'] . "\n";
+                            }
+                        }
+                        $student_responses_result['hint'] = "Hint: " . $question['config']['hint'] . "\n\n";
+                        array_push($out, $student_responses_result);
+                    }
+                }
+            }
+        }
+
+        foreach($out as $line_item) {
+            array_push($output, $line_item['stem']);
+            array_push($output, $line_item['yourAnswer']);
+            array_push($output, $line_item['rightAnswer']);
+            array_push($output, $line_item['hint']);
+        }
+
+        if(empty($out)) {
+            array_push($output, "There are no wrong answers to show here.\n\n");
+        }
+
+        // 4. Display output
+        $this->displayOnConsole($output);
     }
 
     public function displayOnConsole($output) 
