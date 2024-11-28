@@ -5,6 +5,7 @@ This project is built with PHP programming language, PHP Unit testing framework,
 
 ## Description
 
+- All the requirements have been met.
 - The test data is located inside data directory under project root.  
 - The input is read from the files in data directory under project root.  
 - The output will be displayed on the CLI
@@ -13,12 +14,15 @@ This project is built with PHP programming language, PHP Unit testing framework,
 - PHP framework has not been implemented as part of this project
 - Automated tests, Functional & Integration testing are not covered in this project. PHPUnit testing is covered.
 
-## Assumptions
+## Assumptions or Limitations
 
 The program works based on the following assumptions made during development.
 
 - The test data is assumed to have no duplicate records.
 - The year level in students.json and student-responses.json is ambiguous and inconsistent.
+- In Progress Report section, The difference in the maximum and minimum rawscore is calculated without considering the evaluation of the date completion.
+- If the date completion is considered then there is a technical debt which needs to be addressed to get more accurate representation of the message in the last line.
+- The GitHub Actions CI integration with Docker Hub is problematic due to authuentication failures using Docker Personal Access Token (PAT). I'm currently working on resolving the issue.
 
 ## Getting Started
 
@@ -30,8 +34,7 @@ Before starting the installation you must have the following prerequisites.
 2. **PHP 8.3.x or Latest Package**: Hypertext Preprocessor server-side programming language.
 2. **Composer:** Composer is a tool for dependency management in PHP. It allows you to declare the libraries your project depends on and it will manage (install/update) them for you.
 2. **Docker Desktop:** Docker is used for containerising the PHP Application and build neccssary images for the application.
-3. **GitHub or CLI Git**: Clone the github repository from the provided URL or download and unzip the project files. Clone or place the project in a desired location of your local_dev_path.  
-4. Open `src/Report.php` file and update `PROJECT_DIRECTORY` path accordingly.
+3. **GitHub or CLI Git**: Clone the github repository from the provided URL or download and unzip the project files. Clone or place the project in a desired location of your local_dev_path. 
     
 ### Installing
 
@@ -126,6 +129,20 @@ php src/RunApp.php
     ```  
     php vendor/bin/phpunit tests/<NameYourTest>.php
     ```
+
+3. Run Students PHPUnit Test & Assertions  
+    ```  
+    php vendor/bin/phpunit tests/StudentsTest.php
+    ```
+
+4. Run Assessments PHPUnit Tests & Assertions  
+    ```  
+    php vendor/bin/phpunit tests/AssessmentsTest.php
+    ```
+
+## Terminal or CLI Output Screenshots
+
+
 
 ## Built With
 
