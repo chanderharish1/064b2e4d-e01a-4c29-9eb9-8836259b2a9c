@@ -5,6 +5,7 @@ This project is built with PHP programming language, PHP Unit testing framework,
 
 ## Description
 
+- All the requirements have been met.
 - The test data is located inside data directory under project root.  
 - The input is read from the files in data directory under project root.  
 - The output will be displayed on the CLI
@@ -21,6 +22,7 @@ The program works based on the following assumptions made during development.
 - The year level in students.json and student-responses.json is ambiguous and inconsistent.
 - In Progress Report section, The difference in the maximum and minimum rawscore is calculated without considering the evaluation of the date completion.
 - If the date completion is considered then there is a technical debt which needs to be addressed to get more accurate representation of the message in the last line.
+- The GitHub Actions CI integration with Docker Hub is problematic due to authuentication failures using Docker Personal Access Token (PAT). I'm currently working on resolving the issue.
 
 ## Getting Started
 
