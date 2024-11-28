@@ -142,6 +142,13 @@ php src/RunApp.php
 
 ## Terminal or CLI Output Screenshots
 
+<img width="1552" alt="Screen Shot 2024-11-28 at 1 39 48 pm" src="https://github.com/user-attachments/assets/ed644a69-0b18-49eb-aa2c-308c71e3a198">
+
+<img width="1552" alt="Screen Shot 2024-11-28 at 1 10 16 pm" src="https://github.com/user-attachments/assets/74aa059c-029b-496b-91bb-e55e873252c0">
+
+<img width="1552" alt="Screen Shot 2024-11-28 at 9 39 35 am" src="https://github.com/user-attachments/assets/db9e6904-65e1-444b-aad8-b256206f2711">
+
+![Screen Shot 2024-11-28 at 12 30 26 pm](https://github.com/user-attachments/assets/2c5b2b43-568b-40f9-8299-94bebcf33a9c)
 
 
 ## Built With
