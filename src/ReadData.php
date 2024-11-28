@@ -11,10 +11,10 @@ class ReadData
 
     public function __construct()
     {
-        $this->students = Report::PROJECT_DIRECTORY . "/data/students.json";
-        $this->questions = Report::PROJECT_DIRECTORY . "/data/questions.json";
-        $this->student_responses = Report::PROJECT_DIRECTORY . "/data/student-responses.json";
-        $this->assessments = Report::PROJECT_DIRECTORY . "/data/assessments.json";
+        $this->students = __DIR__ . "/../data/students.json";
+        $this->questions = __DIR__ . "/../data/questions.json";
+        $this->student_responses = __DIR__ . "/../data/student-responses.json";
+        $this->assessments = __DIR__ . "/../data/assessments.json";
     }
 
     /**
