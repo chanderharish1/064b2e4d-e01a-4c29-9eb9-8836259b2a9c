@@ -1,5 +1,4 @@
-# Coding Challenge
-## Student's Assessment Reporting Application
+# Student's Assessment Reporting Application
 
 This project is built with PHP programming language, PHP Unit testing framework, Composer dependency management tool.
 
